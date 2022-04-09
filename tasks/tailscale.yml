@@ -1,0 +1,52 @@
+- name: required libraries for tailscale
+  become: true
+  apt:
+    name: ["curl", "apt-transport-https"]
+  tags:
+    - tailscale
+    - install
+    - server
+- name: Install tailscale
+  shell: curl -fsSL https://tailscale.com/install.sh | sh
+  when:
+    - ansible_facts['distribution'] != "Linux Mint"
+  tags:
+    - tailscale
+    - install
+    - server
+- name: Add tailscale's package signing key and repository for LMDE 5 Elsie
+  shell: |
+    curl -fsSL https://pkgs.tailscale.com/stable/debian/bullseye.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+    curl -fsSL https://pkgs.tailscale.com/stable/debian/bullseye.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+  when:
+    - ansible_facts['distribution'] == "Linux Mint"
+    - ansible_facts['distribution_major_version'] == "5"
+  tags:
+    - tailscale
+    - install
+    - server
+- name: Install tailscale for LMDE 5 Elsie
+  become: true
+  apt:
+    update_cache: true
+    name: tailscale
+  when:
+    - ansible_facts['distribution'] == "Linux Mint"
+    - ansible_facts['distribution_major_version'] == "5"
+  tags:
+    - tailscale
+    - install
+    - server
+- name: Enable tailscale for LMDE 5 Elsie
+  become: true
+  ansible.builtin.systemd:
+    name: tailscaled
+    state: started
+    enabled: yes
+  when:
+    - ansible_facts['distribution'] == "Linux Mint"
+    - ansible_facts['distribution_major_version'] == "5"
+  tags:
+    - tailscale
+    - install
+    - server

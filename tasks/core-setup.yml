@@ -1,0 +1,46 @@
+- name: Install System Packages (build-essential, curl, htop, git, vim, tmux)
+  become: true
+  apt:
+    name: [ "build-essential", "curl", "htop", "git", "vim", "tmux" ]
+  tags:
+    - install
+    - core
+    - server
+- name: Install asdf
+  ansible.builtin.git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "$HOME/.asdf"
+    accept_hostkey: yes
+  tags:
+    - install
+    - core
+    - server
+- name: asdf add nodejs and golang plugins
+  command: "$HOME/.asdf/bin/asdf plugin add {{ item }}"
+  register: result
+  failed_when: "'already added' not in result.stderr and result.stderr != ''"
+  with_items:
+  - nodejs
+  - golang
+  tags:
+    - install
+    - core
+    - server
+- name: asdf install nodejs:lts and golang:latest
+  command: "$HOME/.asdf/bin/asdf install {{ item }}"
+  with_items:
+  - nodejs lts
+  - golang latest
+  tags:
+    - install
+    - core
+    - server
+- name: asdf make nodejs and golang global
+  command: "$HOME/.asdf/bin/asdf global {{ item }}"
+  with_items:
+  - nodejs lts
+  - golang latest
+  tags:
+    - install
+    - core
+    - server

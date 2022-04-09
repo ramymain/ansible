@@ -1,0 +1,7 @@
+- name: Install productivity packages
+  become: true
+  apt:
+    name: [ "i3", "fzf", "gimp", "xclip", "tldr", "ripgrep", "shutter" ]
+  tags:
+    - install
+    - productivity
