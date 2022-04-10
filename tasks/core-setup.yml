@@ -16,6 +16,8 @@
     - core
     - server
 - name: asdf add nodejs and golang plugins
+  environment:
+    PATH: "{{ ansible_env.HOME}}/.asdf/bin:{{ ansible_env.PATH }}"
   command: "$HOME/.asdf/bin/asdf plugin add {{ item }}"
   register: result
   failed_when: "'already added' not in result.stderr and result.stderr != ''"
@@ -27,6 +29,8 @@
     - core
     - server
 - name: asdf install nodejs:lts and golang:latest
+  environment:
+    PATH: "{{ ansible_env.HOME}}/.asdf/bin:{{ ansible_env.PATH }}"
   command: "$HOME/.asdf/bin/asdf install {{ item }}"
   with_items:
   - nodejs lts
@@ -36,6 +40,8 @@
     - core
     - server
 - name: asdf make nodejs and golang global
+  environment:
+    PATH: "{{ ansible_env.HOME}}/.asdf/bin:{{ ansible_env.PATH }}"
   command: "$HOME/.asdf/bin/asdf global {{ item }}"
   with_items:
   - nodejs lts
