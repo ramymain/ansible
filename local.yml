@@ -17,3 +17,4 @@
     - include: tasks/core-setup.yml
     - include: tasks/brave.yml
     - include: tasks/tailscale.yml
+    - include: tasks/productivity-tools.yml
