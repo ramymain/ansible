@@ -18,6 +18,17 @@
     - dotfiles
     - stow
     - server
+- name: Stat .bashrc
+  stat: path=$HOME/.bashrc
+  register: bashrc_stat
+- name: Move .bashrc
+  command: mv $HOME/.bashrc $HOME/.bashrc.bak
+- name: Stat .bash_profile
+  stat: path=$HOME/.bash_profile
+  register: bash_profile_stat
+- name: Move .bash_profile
+  command: mv $HOME/.bash_profile $HOME/.bash_profile.bak
+  when: bashrc_stat.stat.exists
 - name: Stow dotfiles
   shell: cd $HOME/.dotfiles && ./setup
   tags:
